@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+
+import mongoose from "mongoose";
 
 const managerSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -11,4 +13,5 @@ const managerSchema = new mongoose.Schema({
   teamSales: { type: Number, default: 0 },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Manager", managerSchema);
+// module.exports = mongoose.model("Manager", managerSchema);
+export default mongoose.model('Manager', managerSchema);
