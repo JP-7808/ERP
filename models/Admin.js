@@ -1,20 +1,8 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  phone: { type: String, required: true },
-  AdminID: { type: Number, required: true,unique: true, 
-    validate: 
-    {
-      validator: function(v) 
-      {
-        return /^\d{7}$/.test(v); // Ensure it's a 7-digit number
-      },
-      message: props => `${props.value} is not a valid 7-digit AdminID!`
-    }
-  }
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  managedManagers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 
-export default mongoose.model("Admin", adminSchema);
+module.exports = mongoose.model("Admin", adminSchema);
