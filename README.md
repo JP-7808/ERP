@@ -1,4 +1,3 @@
-﻿# ERP
 # ERP
 
 # Add your .env file
