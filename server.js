@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js"; // Import authentication routes
-import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -34,7 +33,6 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);  // Authentication routes
-app.use("/api/admin", adminRoutes); //Admin Routes
 
 const PORT = process.env.PORT || 6600;
 app.listen(PORT, () => {
