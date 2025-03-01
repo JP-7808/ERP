@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const salesSchema = new mongoose.Schema({
   employee: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -13,4 +13,4 @@ const salesSchema = new mongoose.Schema({
   paymentMode: { type: String, enum: ["monthly", "quarterly", "yearly"], required: true },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Sales", salesSchema);
+export default mongoose.model("Sales", salesSchema);
