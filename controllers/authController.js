@@ -1,11 +1,19 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Admin from "../models/Admin.js";
+import Manager from "../models/Manager.js";
+import Employee from "../models/Employee.js";
 
 // Register User
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, phone } = req.body;
+    const { name, email, password, role, phone, designation, reportingManager } = req.body;
+
+    // Validate required fields based on role
+    if (role === "employee" && (!designation || !reportingManager)) {
+      return res.status(400).json({ message: "Employee role requires designation and reportingManager" });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -25,7 +33,26 @@ export const registerUser = async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
+
+    // Create role-based entries
+    if (role === "admin") {
+      await Admin.create({ user: newUser._id, managedManagers: [] });
+    } else if (role === "manager") {
+      await Manager.create({ user: newUser._id, teamMembers: [] });
+    } else if (role === "employee") {
+      await Employee.create({
+        user: newUser._id,
+        designation,
+        reportingManager,
+        monthlyTarget: 0,
+        quarterlyTarget: 0,
+        yearlyTarget: 0,
+        totalSales: 0,
+        incentiveSlabs: [],
+      });
+    }
+
+    res.status(201).json({ message: "User registered successfully", user: newUser });
 
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
