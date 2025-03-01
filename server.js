@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js"; // Import authentication routes
-import adminRoutes from "./routes/adminRoutes.js"; // Import admin routes
+
 
 dotenv.config();
 const app = express();
