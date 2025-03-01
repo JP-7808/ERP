@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);  // Authentication routes
-app.use("/api/admin", adminRoutes); // Include admin routes
+
 
 const PORT = process.env.PORT || 6600;
 app.listen(PORT, () => {
