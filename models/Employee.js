@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const employeeSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -11,4 +11,4 @@ const employeeSchema = new mongoose.Schema({
   incentiveSlabs: { type: Array, default: [] },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Employee", employeeSchema);
+export default mongoose.model("Employee", employeeSchema);
