@@ -11,9 +11,9 @@ export const registerUser = async (req, res) => {
     const { name, email, password, role, phone, designation, reportingManager } = req.body;
 
     // Validate required fields based on role
-    if (role === "employee" && (!designation || !reportingManager)) {
-      return res.status(400).json({ message: "Employee role requires designation and reportingManager" });
-    }
+    // if (role === "employee" && (!designation || !reportingManager)) {
+    //   return res.status(400).json({ message: "Employee role requires designation and reportingManager" });
+    // }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
