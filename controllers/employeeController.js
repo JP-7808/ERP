@@ -1,143 +1,120 @@
-const Employee = require("../models/Employee");
-const Sale = require("../models/Sale");
-const Target = require("../models/Target");
 
-// Create new employee data
-exports.createEmployee = async (req, res) => {
-    const employeeData = req.body;
-    console.log("Incoming employee data:", employeeData);
-    
-    // Check for required fields
-    if (!employeeData.name || !employeeData.position) {
-        return res.status(400).json({ message: 'Name and position are required fields.' });
-    }
-    
+import Employee from "../models/Employee.js";
+import User from "../models/User.js";
+
+// @desc Create new employee
+export const createEmployee = async (req, res) => {
     try {
-        const employee = new Employee(employeeData);
-        const result = await employee.save();
-        res.status(201).json({ message: 'Employee data recorded', employee: result });
+        const employee = new Employee(req.body);
+        await employee.save();
+        res.status(201).json({ success: true, data: employee });
     } catch (error) {
-        console.error("Error recording employee data:", error);
-        if (error.name === 'ValidationError') {
-            const errors = {};
-            for (const field in error.errors) {
-                errors[field] = error.errors[field].message;
-            }
-            res.status(400).json({ message: 'Validation error', errors: errors });
-        } else if (error.code === 11000) {
-            res.status(409).json({ message: 'Duplicate key error', error: error.message });
-        } else {
-            res.status(500).json({ message: 'Error recording employee data', error: error.message });
-        }
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-// Retrieve all employee data
-exports.getAllEmployees = async (req, res) => {
+// @desc Get all employees
+export const getEmployees = async (req, res) => {
     try {
         const employees = await Employee.find();
-        res.status(200).json({ message: 'List of employee data', employees });
+        res.status(200).json({ success: true, data: employees });
     } catch (error) {
-        console.error("Error retrieving employee data:", error);
-        res.status(500).json({ message: 'Error retrieving employee data', error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Retrieve employee data by ID
-exports.getEmployeeById = async (req, res) => {
-    const { id } = req.params;
+// @desc Get a single employee by ID
+export const getEmployeeById = async (req, res) => {
     try {
-        const employee = await Employee.findById(id);
-        if (employee) {
-            res.status(200).json({ message: 'Employee found', employee });
-        } else {
-            res.status(404).json({ message: 'Employee not found' });
+        const employee = await Employee.findById(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
         }
+        res.status(200).json({ success: true, data: employee });
     } catch (error) {
-        console.error("Error retrieving employee:", error);
-        res.status(500).json({ message: 'Error retrieving employee', error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Update employee data by ID
-exports.updateEmployee = async (req, res) => {
-    const { id } = req.params;
-    const updatedEmployee = req.body;
+// @desc Update an employee
+export const updateEmployee = async (req, res) => {
     try {
-        const employee = await Employee.findByIdAndUpdate(id, updatedEmployee, { new: true });
-        if (employee) {
-            res.status(200).json({ message: 'Employee updated', employee });
-        } else {
-            res.status(404).json({ message: 'Employee not found' });
+        const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
         }
+        res.status(200).json({ success: true, data: employee });
     } catch (error) {
-        console.error("Error updating employee:", error);
-        res.status(500).json({ message: 'Error updating employee', error: error.message });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-// Delete employee data by ID
-exports.deleteEmployee = async (req, res) => {
-    const { id } = req.params;
+// @desc Delete an employee
+export const deleteEmployee = async (req, res) => {
     try {
-        const result = await Employee.findByIdAndDelete(id);
-        if (result) {
-            res.status(200).json({ message: 'Employee deleted' });
-        } else {
-            res.status(404).json({ message: 'Employee not found' });
+        const employee = await Employee.findByIdAndDelete(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
         }
+        res.status(200).json({ success: true, message: "Employee deleted" });
     } catch (error) {
-        console.error("Error deleting employee:", error);
-        res.status(500).json({ message: 'Error deleting employee', error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Get Employee Dashboard Data
-exports.getEmployeeDashboard = async (req, res) => {
-    const employeeId = req.query.id;
-    console.log("Employee ID:", employeeId);
+// @desc Assign sales targets
+export const assignTargets = async (req, res) => {
     try {
-        const employee = await Employee.findById(employeeId);
-        if (!employee) return res.status(404).json({ message: "Employee not found" });
+        const { monthlyTarget, quarterlyTarget, yearlyTarget } = req.body;
+        const employee = await Employee.findByIdAndUpdate(
+            req.params.id,
+            { monthlyTarget, quarterlyTarget, yearlyTarget },
+            { new: true }
+        );
 
-        const sales = await Sale.find({ employeeId });
-        const targets = await Target.find({ employeeId });
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
+        }
+        res.status(200).json({ success: true, data: employee });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
 
-        res.json({
-            employee,
-            sales,
-            targets,
+// @desc Get sales performance
+export const getSalesPerformance = async (req, res) => {
+    try {
+        const employee = await Employee.findById(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
+        }
+        res.status(200).json({
+            success: true,
+            data: {
+                monthlySales: employee.totalSales,
+                incentivesEarned: employee.incentivesEarned
+            }
         });
     } catch (error) {
-        console.error("Server Error in employee dashboard:", error);
-        res.status(500).json({ message: "Server Error", error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Fetch Sales Performance
-exports.getSalesPerformance = async (req, res) => {
+// @desc Get incentive details
+export const getIncentiveDetails = async (req, res) => {
     try {
-        const employeeId = req.user.id;
-        const sales = await Sale.find({ employeeId });
-
-        const totalSales = sales.reduce((sum, sale) => sum + sale.amount, 0);
-
-        res.json({ totalSales, sales });
+        const employee = await Employee.findById(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
+        }
+        res.status(200).json({
+            success: true,
+            data: {
+                incentivesEarned: employee.incentivesEarned,
+                incentiveSlabs: employee.incentiveSlabs
+            }
+        });
     } catch (error) {
-        console.error("Server Error in sales performance:", error);
-        res.status(500).json({ message: "Server Error", error: error.message });
-    }
-};
-
-// Fetch Assigned Targets
-exports.getTargets = async (req, res) => {
-    try {
-        const employeeId = req.user.id;
-        const targets = await Target.find({ employeeId });
-
-        res.json(targets);
-    } catch (error) {
-        console.error("Server Error in get targets:", error);
-        res.status(500).json({ message: "Server Error", error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
