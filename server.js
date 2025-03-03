@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js"; // Import authentication routes
 import salesRoutes from "./routes/salesRoutes.js";
+import employeeRoutes from "./routes/employeeRoutes.js"; // Import employee routes
 
 
 dotenv.config();
@@ -36,7 +37,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);  // Authentication routes
 app.use("/api/sales", salesRoutes);
-
+app.use("/api/employees", employeeRoutes);
 
 const PORT = process.env.PORT || 6600;
 app.listen(PORT, () => {
