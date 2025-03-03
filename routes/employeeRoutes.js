@@ -1,25 +1,27 @@
-const express = require('express');
-const employeesController = require('./employeesController'); 
-const { authenticate } = require('../authMiddleware'); 
+import express from "express";
+import {
+    createEmployee,
+    getEmployees,
+    getEmployeeById,
+    updateEmployee,
+    deleteEmployee,
+    assignTargets,
+    getSalesPerformance,
+    getIncentiveDetails
+} from "../controllers/employeeController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-// Create new employee data
-router.post('/', authenticate, employeesController.createEmployee);
+router.post('/', createEmployee);
+router.get('/', getEmployees);
+router.get('/:id', getEmployeeById);
+router.put('/:id', updateEmployee);
+router.delete('/:id', deleteEmployee);
+router.post('/:id/targets', assignTargets);
+router.get('/:id/performance', getSalesPerformance);
+router.get('/:id/incentives', getIncentiveDetails); // New route for incentives
 
-// Retrieve all employee data
-router.get('/', authenticate, employeesController.getAllEmployees);
+export default router;
 
-// Retrieve employee data by ID
-router.get('/:id', authenticate, employeesController.getEmployeeById);
-
-// Update employee data by ID
-router.put('/:id', authenticate, employeesController.updateEmployee);
-
-// Delete employee data by ID
-router.delete('/:id', authenticate, employeesController.deleteEmployee);
-
-// Get Employee Dashboard Data
-router.get('/dashboard', authenticate, employeesController.getEmployeeDashboard);
-
-module.exports = router;
