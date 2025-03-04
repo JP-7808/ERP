@@ -1,13 +1,17 @@
+// const mongoose = require("mongoose");
+
 import mongoose from "mongoose";
 
-const ManagerSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true }, // ✅ Unique constraint
-    password: { type: String, required: true },
-    team: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }], 
-    targets: [{ period: String, amount: Number }],
-    sales: [{ employeeId: mongoose.Schema.Types.ObjectId, amount: Number, date: Date }],
-    contests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Contest" }]
-});
+const managerSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  assignedTargets: {
+    monthly: { type: Number, default: 0 },
+    quarterly: { type: Number, default: 0 },
+    yearly: { type: Number, default: 0 }
+  },
+  teamSales: { type: Number, default: 0 },
+}, { timestamps: true });
 
-export default mongoose.model("Manager", ManagerSchema);
+// module.exports = mongoose.model("Manager", managerSchema);
+export default mongoose.model('Manager', managerSchema);
