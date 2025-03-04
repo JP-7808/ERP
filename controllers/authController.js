@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
     // if (role === "employee" && (!designation || !reportingManager)) {
     //   return res.status(400).json({ message: "Employee role requires designation and reportingManager" });
     // }
-
+    
     // Validate email format
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Invalid email format" });
@@ -27,6 +27,7 @@ export const registerUser = async (req, res) => {
         message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character",
       });
     }
+
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
