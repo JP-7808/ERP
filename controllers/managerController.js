@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import validator from "validator"
 import Manager from "../models/Manager.js";
 import User from "../models/User.js";
 import Employee from "../models/Employee.js";
@@ -8,6 +9,18 @@ export const registerManager = async (req, res) => {
     try {
         const { name, email, password, phone, assignedTargets } = req.body;
 
+        // Validate email format
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ message: "Invalid email format" });
+        }
+    
+        // Validate password strength
+        if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
+            return res.status(400).json({
+            message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+            });
+        }
+        
         // Check if the email already exists
         let existingUser = await User.findOne({ email });
         if (existingUser) {
