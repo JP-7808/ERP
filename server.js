@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js"; // Import authentication routes
 import salesRoutes from "./routes/salesRoutes.js";
-import employeeRoutes from "./routes/employeeRoutes.js"; // Import employee routes
+import employeeRoutes from "./routes/employeeRoutes.js"
 import managerRoutes from "./routes/managerRoutes.js"
 
 
@@ -37,8 +37,8 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);  // Authentication routes
-app.use("/api/sales", salesRoutes);
-app.use("/api/employees", employeeRoutes);
+app.use("/api/sales", salesRoutes);  // Sales Routes
+app.use("/api/employee", employeeRoutes);  // employee Routes
 app.use("/api/manager", managerRoutes);  // manager Routes
 
 const PORT = process.env.PORT || 6600;
