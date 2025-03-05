@@ -26,7 +26,7 @@ router.get("/:id", authMiddleware, getEmployeeById);
 // Update an employee's details (Only managers and admins can update)
 router.put("/:id", authMiddleware, roleMiddleware(["manager", "admin"]), updateEmployee);
 
-// Delete an employee (Only admins can delete)
+// Delete an employee (Only manager and admins can delete)
 router.delete("/:id", authMiddleware, roleMiddleware(["manager", "admin"]), deleteEmployee);
 
 // Get employee performance metrics
