@@ -27,7 +27,7 @@ router.get("/:id", authMiddleware, getEmployeeById);
 router.put("/:id", authMiddleware, roleMiddleware(["manager", "admin"]), updateEmployee);
 
 // Delete an employee (Only admins can delete)
-router.delete("/:id", authMiddleware, roleMiddleware(["admin"]), deleteEmployee);
+router.delete("/:id", authMiddleware, roleMiddleware(["manager", "admin"]), deleteEmployee);
 
 // Get employee performance metrics
 router.get("/:id/performance", authMiddleware, getEmployeePerformance);
