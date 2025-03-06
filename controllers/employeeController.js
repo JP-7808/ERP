@@ -9,9 +9,16 @@ export const registerEmployee = async (req, res) => {
         const { name, email, password, phone, designation, reportingManager, monthlyTarget, quarterlyTarget, yearlyTarget, incentiveSlabs } = req.body;
 
         // Validate email format
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ message: "Invalid email format" });
+        // if (!validator.isEmail(email)) {
+        //     return res.status(400).json({ message: "Invalid email format" });
+        // }
+
+        // Validate email format and domain
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@einfratech\.(tech|com)$/;
+        if (!emailRegex.test(email)) {
+          return res.status(400).json({ message: "Email must end with @einfratech.tech or @einfratech.com" });
         }
+
     
         // Validate password strength
         if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
