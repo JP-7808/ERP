@@ -17,8 +17,14 @@ export const registerUser = async (req, res) => {
     // }
     
     // Validate email format
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
+    // if (!validator.isEmail(email)) {
+    //   return res.status(400).json({ message: "Invalid email format" });
+    // }
+
+    // Validate email format and domain
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@einfratech\.(tech|com)$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Email must end with @einfratech.tech or @einfratech.com" });
     }
 
     // Validate password strength
