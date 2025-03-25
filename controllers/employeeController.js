@@ -160,3 +160,21 @@ export const updateTargets = async (req, res) => {
         res.status(500).json({ message: "Error updating employee targets", error });
     }
 };
+
+export const findEmployeeByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        // Find the Employee where the `user` field matches the given `userId`
+        const employee = await Employee.findOne({ user: userId });
+
+        if (!employee) {
+            return res.status(404).json({ message: "Employee record not found." });
+        }
+
+        res.status(200).json({ employeeId: employee._id });
+    } catch (error) {
+        console.error("Error fetching employee ID:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+};
