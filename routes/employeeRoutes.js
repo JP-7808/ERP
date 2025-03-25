@@ -6,7 +6,8 @@ import {
     deleteEmployee, 
     getEmployeePerformance, 
     updateTargets,
-    registerEmployee 
+    registerEmployee,
+    findEmployeeByUserId
 } from "../controllers/employeeController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
@@ -34,5 +35,8 @@ router.get("/:id/performance", authMiddleware, getEmployeePerformance);
 
 // Update employee targets (Only managers and admins can modify targets)
 router.put("/:id/targets", authMiddleware, roleMiddleware(["manager", "admin"]), updateTargets);
+
+// find employee id by user
+router.get("/user/:userId", authMiddleware, findEmployeeByUserId);
 
 export default router;
